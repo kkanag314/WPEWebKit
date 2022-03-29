@@ -1978,6 +1978,10 @@ void AccessibilityNodeObject::visibleText(Vector<AccessibilityText>& textOrder) 
     case AccessibilityRole::RadioButton:
     case AccessibilityRole::Switch:
     case AccessibilityRole::Tab:
+    case AccessibilityRole::Generic:
+    case AccessibilityRole::Cell:
+    case AccessibilityRole::GridCell:
+    case AccessibilityRole::Caption:
         useTextUnderElement = true;
         break;
     default:
