@@ -71,6 +71,7 @@ enum class AccessType : int8_t {
     DeleteByID,
     DeleteByVal,
     GetPrivateName,
+    GetPrivateNameById,
     CheckPrivateBrand,
     SetPrivateBrand,
 };
@@ -100,8 +101,8 @@ public:
     }
 
     StructureStubInfo()
-        : StructureStubInfo(AccessType::GetById, { })
-    { }
+    {
+    }
 
     ~StructureStubInfo();
 
@@ -372,7 +373,7 @@ public:
     GPRReg propertyTagGPR() const { return m_extraTagGPR; }
 #endif
 
-    CodeOrigin codeOrigin;
+    CodeOrigin codeOrigin { };
     PropertyOffset byIdSelfOffset;
     std::unique_ptr<PolymorphicAccess> m_stub;
     WriteBarrierStructureID m_inlineAccessBaseStructureID;
@@ -412,7 +413,7 @@ public:
     GPRReg m_extraTagGPR { InvalidGPRReg };
 #endif
 
-    AccessType accessType;
+    AccessType accessType { AccessType::GetById };
 private:
     CacheType m_cacheType { CacheType::Unset };
 public:
@@ -452,7 +453,7 @@ inline auto appropriateOptimizingGetByIdFunction(AccessType type) -> decltype(&o
         return operationTryGetByIdOptimize;
     case AccessType::GetByIdDirect:
         return operationGetByIdDirectOptimize;
-    case AccessType::GetPrivateName:
+    case AccessType::GetPrivateNameById:
         return operationGetPrivateNameByIdOptimize;
     case AccessType::GetByIdWithThis:
     default:
@@ -470,7 +471,7 @@ inline auto appropriateGenericGetByIdFunction(AccessType type) -> decltype(&oper
         return operationTryGetByIdGeneric;
     case AccessType::GetByIdDirect:
         return operationGetByIdDirectGeneric;
-    case AccessType::GetPrivateName:
+    case AccessType::GetPrivateNameById:
         return operationGetPrivateNameByIdGeneric;
     case AccessType::GetByIdWithThis:
     default:
