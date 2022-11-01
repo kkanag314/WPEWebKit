@@ -197,6 +197,7 @@ set(WPE_API_INSTALLED_HEADERS
     ${WEBKIT_DIR}/UIProcess/API/wpe/WebKitOptionMenuItem.h
     ${WEBKIT_DIR}/UIProcess/API/wpe/WebKitPermissionRequest.h
     ${WEBKIT_DIR}/UIProcess/API/wpe/WebKitPermissionStateQuery.h
+    ${WEBKIT_DIR}/UIProcess/API/glib/WebKitPointerLockPermissionRequest.h
     ${WEBKIT_DIR}/UIProcess/API/wpe/WebKitPlugin.h
     ${WEBKIT_DIR}/UIProcess/API/wpe/WebKitPolicyDecision.h
     ${WEBKIT_DIR}/UIProcess/API/wpe/WebKitRectangle.h
