@@ -163,6 +163,7 @@ void AXLogger::log(AXObjectCache& axObjectCache)
     }
 }
 
+        [&size] (const HashSet<AXID>& typedCollection) { size = typedCollection.size(); },
 #endif // !LOG_DISABLED
 
 TextStream& operator<<(TextStream& stream, AccessibilityRole role)
