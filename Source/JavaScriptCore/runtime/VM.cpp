@@ -92,6 +92,7 @@
 #include "PropertyTable.h"
 #include "RandomizingFuzzerAgent.h"
 #include "RegExpCache.h"
+#include "ResourceExhaustion.h"
 #include "SamplingProfiler.h"
 #include "ScopedArguments.h"
 #include "ShadowChicken.h"
@@ -299,7 +300,7 @@ VM::VM(VMType vmType, HeapType heapType, WTF::RunLoop* runLoop, bool* success)
             if (success)
                 *success = false;
             else
-                RELEASE_ASSERT(bigInt);
+                RELEASE_ASSERT_RESOURCE_AVAILABLE(bigInt, MemoryExhaustion, "Crash intentionally because memory is exhausted.");
         }
     }
 
