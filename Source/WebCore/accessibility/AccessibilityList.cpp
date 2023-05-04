@@ -118,7 +118,7 @@ bool AccessibilityList::childHasPseudoVisibleListItemMarkers(Node* node)
     
     // Platforms which expose rendered text content through the parent element will treat
     // those renderers as "ignored" objects.
-#if USE(ATSPI)
+#if USE(ATSPI) || USE(ATK)
     String text = axBeforePseudo->textUnderElement();
     return !text.isEmpty() && !text.containsOnly<isASCIIWhitespace>();
 #else

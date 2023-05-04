@@ -405,7 +405,7 @@ list(APPEND WebKit_LIBRARIES
     ${LIBSOUP_LIBRARIES}
 )
 
-if (ENABLE_ACCESSIBILITY)
+if (USE_ATK)
     list(APPEND WebKit_LIBRARIES ATK::Bridge)
 endif ()
 

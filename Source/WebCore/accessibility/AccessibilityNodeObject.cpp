@@ -1539,6 +1539,8 @@ int AccessibilityNodeObject::indexForVisiblePosition(const VisiblePosition& posi
     TextIteratorBehaviors behaviors;
 #if USE(ATSPI)
     behaviors.add(TextIteratorBehavior::EmitsObjectReplacementCharacters);
+#elif USE(ATK)
+    behaviors.add(TextIteratorBehavior::EmitsCharactersBetweenAllVisiblePositions);
 #endif
     return WebCore::indexForVisiblePosition(*node, position, behaviors);
 }
