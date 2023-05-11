@@ -323,7 +323,7 @@ void DrawingAreaCoordinatedGraphics::unregisterScrollingTree()
 
 GraphicsLayerFactory* DrawingAreaCoordinatedGraphics::graphicsLayerFactory()
 {
-    if (!m_layerTreeHost)
+    if (m_alwaysUseCompositing && !m_layerTreeHost)
         enterAcceleratedCompositingMode(nullptr);
     return m_layerTreeHost ? m_layerTreeHost->graphicsLayerFactory() : nullptr;
 }
@@ -588,6 +588,8 @@ void DrawingAreaCoordinatedGraphics::resumePainting()
 
 void DrawingAreaCoordinatedGraphics::enterAcceleratedCompositingMode(GraphicsLayer* graphicsLayer)
 {
+    if (!m_alwaysUseCompositing)
+        return;
 #if PLATFORM(GTK)
     if (!m_alwaysUseCompositing) {
         m_webPage.corePage()->settings().setForceCompositingMode(true);

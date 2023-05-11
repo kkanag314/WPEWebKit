@@ -74,10 +74,20 @@ View::View(struct wpe_view_backend* backend, const API::PageConfiguration& baseC
         configuration->setPreferences(preferences);
     }
     if (preferences) {
-        preferences->setAcceleratedCompositingEnabled(true);
-        preferences->setForceCompositingMode(true);
-        preferences->setThreadedScrollingEnabled(true);
-        preferences->setWebGLEnabled(true);
+        const auto isHeadless = WTF::findIgnoringASCIICaseWithoutLength(wpe_loader_get_loaded_implementation_library_name(), "headless") != WTF::notFound;
+        if (isHeadless) {
+            preferences->setNonCompositedWebGLEnabled(true);
+            preferences->setAcceleratedCompositingEnabled(false);
+            preferences->setForceCompositingMode(false);
+            preferences->setThreadedScrollingEnabled(false);
+            preferences->setAcceleratedDrawingEnabled(false);
+            preferences->setWebGLEnabled(false);
+        } else {
+            preferences->setAcceleratedCompositingEnabled(true);
+            preferences->setForceCompositingMode(true);
+            preferences->setThreadedScrollingEnabled(true);
+            preferences->setWebGLEnabled(true);
+        }
     }
 
     auto* pool = configuration->processPool();

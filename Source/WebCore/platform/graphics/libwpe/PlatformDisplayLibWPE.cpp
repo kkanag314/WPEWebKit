@@ -74,6 +74,8 @@ PlatformDisplayLibWPE::~PlatformDisplayLibWPE()
 bool PlatformDisplayLibWPE::initialize(int hostFd)
 {
     m_backend = wpe_renderer_backend_egl_create(hostFd);
+    if (!m_backend)
+        return false;
 
     EGLNativeDisplayType eglNativeDisplay = wpe_renderer_backend_egl_get_native_display(m_backend);
 
