@@ -205,6 +205,14 @@ bool PropertyCondition::isStillValidAssumingImpurePropertyWatchpoint(
             if (PropertyConditionInternal::verbose)
                 dataLog("Invalid because its put() override may treat ", uid(), " property as read-only.\n");
             return false;
+        } else if (structure->hasNonReifiedStaticProperties()) {
+            if (auto entry = structure->findPropertyHashEntry(uid())) {
+                if (entry->value->attributes() & (PropertyAttribute::ReadOnlyOrAccessorOrCustomAccessor | PropertyAttribute::CustomValue)) {
+                    if (PropertyConditionInternal::verbose)
+                        dataLog("Invalid because we expected not to have a setter, but we have one in non-reified static property table: ", uid(), ".\n");
+                    return false;
+                }
+            }
         }
 
         if (structure->hasPolyProto()) {
