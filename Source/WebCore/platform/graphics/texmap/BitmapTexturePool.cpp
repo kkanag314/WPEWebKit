@@ -84,7 +84,7 @@ void BitmapTexturePool::releaseUnusedTexturesTimerFired()
     MonotonicTime minUsedTime = MonotonicTime::now() - releaseUnusedSecondsTolerance;
 
     static uint64_t storedPixelsLimit = defaultStoredPixelsLimit;
-    std::once_flag onceFlag;
+    static std::once_flag onceFlag;
     std::call_once(onceFlag, []() {
         String envString = String::fromLatin1(getenv("WPE_BITMAP_TEXTURE_POOL_PIXEL_LIMIT"));
         if (!envString.isEmpty()) {
