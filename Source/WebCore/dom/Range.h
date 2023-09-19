@@ -25,6 +25,7 @@
 #pragma once
 
 #include "AbstractRange.h"
+#include "Position.h"
 #include "RangeBoundaryPoint.h"
 #include <wtf/WeakPtr.h>
 
