@@ -32,6 +32,7 @@
     [ConditionallyReadWrite=MEDIA_SOURCE] attribute DOMString kind;
     readonly attribute DOMString label;
     [ConditionallyReadWrite=MEDIA_SOURCE] attribute DOMString language;
+    readonly attribute AudioTrackConfiguration configuration;
 
     attribute boolean enabled;
 };

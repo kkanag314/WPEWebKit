@@ -1148,6 +1148,7 @@ void MediaPlayerPrivateGStreamer::notifyPlayerOfAudio()
     g_object_get(element, "n-audio", &numTracks, nullptr);
 
     GST_INFO_OBJECT(pipeline(), "Media has %d audio tracks", numTracks);
+    printf("Media has %d audio tracks\n", numTracks);
     bool oldHasAudio = m_hasAudio;
     m_hasAudio = numTracks > 0;
     if (oldHasAudio != m_hasAudio)

@@ -34,6 +34,7 @@
 namespace WebCore {
 
 class AudioTrack;
+class AudioTrackConfiguration;
 
 class AudioTrackClient {
 public:
@@ -67,6 +68,8 @@ public:
     void setPrivate(AudioTrackPrivate&);
     void setMediaElement(WeakPtr<HTMLMediaElement>) override;
 
+    AudioTrackConfiguration& configuration() const { return m_configuration; }
+
 private:
     AudioTrack(AudioTrackClient&, AudioTrackPrivate&);
 
@@ -82,6 +85,7 @@ private:
     void willRemove() final;
 
     void updateKindFromPrivate();
+    void updateConfigurationFromPrivate();
 
 #if !RELEASE_LOG_DISABLED
     const char* logClassName() const final { return "AudioTrack"; }
@@ -90,6 +94,8 @@ private:
     AudioTrackClient* m_client { nullptr };
     Ref<AudioTrackPrivate> m_private;
     bool m_enabled { false };
+
+    Ref<AudioTrackConfiguration> m_configuration;
 };
 
 } // namespace WebCore

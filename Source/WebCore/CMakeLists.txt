@@ -1400,6 +1400,7 @@ endif ()
 if (ENABLE_VIDEO_TRACK)
     list(APPEND WebCore_IDL_FILES
         html/track/AudioTrack.idl
+        html/track/AudioTrackConfiguration.idl
         html/track/AudioTrackList.idl
         html/track/DataCue.idl
         html/track/TextTrack.idl
