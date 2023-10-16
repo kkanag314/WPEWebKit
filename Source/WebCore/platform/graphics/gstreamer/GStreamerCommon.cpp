@@ -27,6 +27,7 @@
 #include "DMABufVideoSinkGStreamer.h"
 #include "GLVideoSinkGStreamer.h"
 #include "GStreamerAudioMixer.h"
+#include "GStreamerQuirks.h"
 #include "GStreamerRegistryScanner.h"
 #include "GStreamerSinksWorkarounds.h"
 #include "GUniquePtrGStreamer.h"
@@ -408,6 +409,11 @@ void registerWebKitGStreamerElements()
             if (auto vaapiPlugin = adoptGRef(gst_registry_find_plugin(registry, "vaapi")))
                 gst_registry_remove_plugin(registry, vaapiPlugin.get());
         }
+
+        // Make sure the quirks are created as early as possible.
+        auto& quirksManager = GStreamerQuirksManager::singleton();
+        UNUSED_VARIABLE(quirksManager);
+
         registryWasUpdated = true;
     });
 

@@ -254,7 +254,6 @@ public:
     // to avoid deadlocks from threads in the playback pipeline waiting for the main thread.
     AbortableTaskQueue& sinkTaskQueue() { return m_sinkTaskQueue; }
 
-#if USE(GSTREAMER_HOLEPUNCH)
     class GStreamerHolePunchHost : public ThreadSafeRefCounted<GStreamerHolePunchHost> {
     public:
         static Ref<GStreamerHolePunchHost> create(MediaPlayerPrivateGStreamer& playerPrivate)
@@ -277,7 +276,6 @@ public:
         MediaPlayerPrivateGStreamer* m_playerPrivate;
     };
     void setVideoRectangle(const IntRect& rect);
-#endif
 
 protected:
     enum MainThreadNotification {
@@ -307,11 +305,10 @@ protected:
     virtual bool changePipelineState(GstState);
     virtual void updatePlaybackRate();
 
-#if USE(GSTREAMER_HOLEPUNCH)
+    bool isHolePunchRenderingEnabled() const;
     GstElement* createHolePunchVideoSink();
     void pushNextHolePunchBuffer();
-    bool shouldIgnoreIntrinsicSize() final { return true; }
-#endif
+    bool shouldIgnoreIntrinsicSize() final;
 
 #if USE(TEXTURE_MAPPER_DMABUF)
     GstElement* createVideoSinkDMABuf();
@@ -530,9 +527,8 @@ private:
 
     void configureVideoDecoder(GstElement*);
     void configureElement(GstElement*);
-#if PLATFORM(BROADCOM) || USE(WESTEROS_SINK) || PLATFORM(AMLOGIC) || PLATFORM(REALTEK)
+
     void configureElementPlatformQuirks(GstElement*);
-#endif
 
     void setPlaybinURL(const URL& urlString);
 
@@ -656,10 +652,8 @@ private:
 
     AbortableTaskQueue m_sinkTaskQueue;
 
-#if USE(GSTREAMER_HOLEPUNCH)
     RefPtr<GStreamerHolePunchHost> m_gstreamerHolePunchHost;
     Lock m_holePunchLock;
-#endif
 
     bool m_didTryToRecoverPlayingState { false };
 
