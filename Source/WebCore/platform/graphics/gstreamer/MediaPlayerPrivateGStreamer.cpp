@@ -3074,7 +3074,10 @@ void MediaPlayerPrivateGStreamer::setupCodecProbe(GstElement* element)
         }
 
         GST_INFO_OBJECT(player->pipeline(), "Setting codec for stream %s to %s", streamId.get(), codec.get());
-        player->m_codecs.add(String::fromLatin1(streamId.get()), String::fromLatin1(codec.get()));
+        {
+            Locker locker { player->m_codecsLock };
+            player->m_codecs.add(String::fromLatin1(streamId.get()), String::fromLatin1(codec.get()));
+        }
         return GST_PAD_PROBE_REMOVE;
     }), this, nullptr);
 #else
@@ -4508,6 +4511,7 @@ void MediaPlayerPrivateGStreamer::checkPlayingConsistency()
 
 String MediaPlayerPrivateGStreamer::codecForStreamId(const String& streamId)
 {
+    Locker locker { m_codecsLock };
     if (UNLIKELY(!m_codecs.contains(streamId)))
         return emptyString();
 
