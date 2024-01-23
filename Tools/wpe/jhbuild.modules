@@ -89,6 +89,7 @@
     <dependencies>
       <dep package="icu"/>
     </dependencies>
+    <pkg-config>libpsl.pc</pkg-config>
     <branch module="rockdaboot/libpsl/releases/download/libpsl-${version}/libpsl-${version}.tar.gz"
             version="0.20.2"
             repo="github-tarball"
@@ -243,6 +244,7 @@
            repo="git.freedesktop.org" />
   </meson>
 
+  <!--
   <meson id="graphene">
     <branch repo="github.com"
             module="ebassi/graphene.git"
@@ -251,6 +253,7 @@
       <dep package="glib"/>
     </dependencies>
   </meson>
+  -->
 
   <cmake id="openjpeg">
     <branch repo="github-tarball"
