@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-# If the package $1 is available, prints it. Otherwise if package $2 is available, prints $2.
+# If the package $1 is available, prints it. Otherwise prints $2.
 # Useful for handling when a package is renamed on new versions of Debian/Ubuntu.
 aptIfElse() {
     if apt-cache show $1 &>/dev/null; then
         echo $1
-    elif apt-cache show $2 &>/dev/null; then
+    else
         echo $2
     fi
 }
@@ -31,16 +31,23 @@ PACKAGES=(
     autotools-dev
     bubblewrap
     cmake
+    flite1-dev
     gawk
+    $(aptIfExists gi-docgen)
     gperf
     gtk-doc-tools
     intltool
     itstool
     libasound2-dev
     libatk1.0-dev
+    $(aptIfExists libavif-dev)
+    libdrm-dev
+    $(aptIfExists libenchant-2-dev)
     libepoxy-dev
     libevent-dev
     libfile-copy-recursive-perl
+    libinput-dev
+    $(aptIfExists libjxl-dev)
     $(aptIfElse libgcrypt20-dev libgcrypt11-dev)
     libgstreamer1.0-dev
     libgstreamer-plugins-bad1.0-dev
@@ -48,9 +55,12 @@ PACKAGES=(
     libjpeg-dev
     libkate-dev
     liblcms2-dev
+    $(aptIfExists libmanette-0.2-dev)
+    libnghttp2-dev
     libopenjp2-7-dev
     libpng-dev
     libseccomp-dev
+    $(aptIfExists libsoup-3.0-dev)
     libsqlite3-dev
     libsystemd-dev
     libtasn1-6-dev
@@ -58,8 +68,11 @@ PACKAGES=(
     libwayland-dev
     libwebp-dev
     libwoff-dev
+    $(aptIfExists libwpe-1.0-dev)
+    $(aptIfExists libwpebackend-fdo-1.0-dev)
     libxml2-utils
     libxslt1-dev
+    mesa-common-dev
     ninja-build
     patch
     ruby
@@ -74,25 +87,31 @@ PACKAGES=(
     pulseaudio-utils
     ruby-highline
     ruby-json
-    $(aptIfExists python-gi)
+    python3-gi
 
     # These are dependencies necessary for building with the Flatpak SDK.
     flatpak
     libglib2.0-bin
 
     # These are dependencies necessary for building the jhbuild.
+    bison
+    flex
     git
+    gobject-introspection
     gsettings-desktop-schemas-dev
     gyp
     libegl1-mesa-dev
     libexpat1-dev
-    libfdk-aac-dev
+    $(aptIfExists libfdk-aac-dev)
+    libgirepository1.0-dev
     libgles2-mesa-dev
     liborc-0.4-dev
     libproxy-dev
     libpsl-dev
+    libssl-dev
     libtool-bin
     libxml-libxml-perl
+    nasm
     python3-setuptools
     uuid-dev
     yasm
@@ -100,6 +119,9 @@ PACKAGES=(
     # These are dependencies necessary for using webkit-patch.
     git-svn
     subversion
+
+    # These are dependencies necessary for using git-webkit.
+    python3-dev
 
     # These are GStreamer plugins needed to play different media files.
     gstreamer1.0-gl
