@@ -30,6 +30,7 @@
 #include <WebCore/LibWebRTCMacros.h>
 #include <webrtc/rtc_base/async_packet_socket.h>
 #include <wtf/Forward.h>
+#include <optional>
 
 namespace IPC {
 class Decoder;
