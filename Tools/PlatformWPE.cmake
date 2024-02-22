@@ -19,11 +19,16 @@ endif ()
 
 if (DEVELOPER_MODE AND ENABLE_COG)
     include(ExternalProject)
+    if (DEFINED ENV{PKG_CONFIG_PATH})
+        set(WPE_COG_PKG_CONFIG_PATH ${CMAKE_BINARY_DIR}:$ENV{PKG_CONFIG_PATH})
+    else ()
+        set(WPE_COG_PKG_CONFIG_PATH ${CMAKE_BINARY_DIR})
+    endif ()
     if ("${WPE_COG_REPO}" STREQUAL "")
         set(WPE_COG_REPO "https://github.com/Igalia/cog.git")
     endif ()
     if ("${WPE_COG_TAG}" STREQUAL "")
-        set(WPE_COG_TAG "48347f3a36e6dba75bcfd4f9443730861adec5b0")
+        set(WPE_COG_TAG "dd699e3fa9bf394d0be3362c2863fefefad1b152")
     endif ()
     # TODO Use GIT_REMOTE_UPDATE_STRATEGY with 3.18 to allow switching between
     # conflicting branches without having to delete the repo
@@ -52,6 +57,7 @@ if (DEVELOPER_MODE AND ENABLE_COG)
         CONFIGURE_COMMAND
             meson setup <BINARY_DIR> <SOURCE_DIR>
             --buildtype ${COG_MESON_BUILDTYPE}
+            --pkg-config-path ${WPE_COG_PKG_CONFIG_PATH}
             -Dwpe_api=${WPE_API_VERSION}
             -Dplatforms=drm,headless,gtk4,x11,wayland
         BUILD_COMMAND
