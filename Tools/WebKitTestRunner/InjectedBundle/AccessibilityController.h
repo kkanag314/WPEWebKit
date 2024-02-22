@@ -25,6 +25,7 @@
 
 #pragma once
 
+#include "AccessibilityUIElement.h"
 #include "JSWrappable.h"
 #include <JavaScriptCore/JSObjectRef.h>
 #include <JavaScriptCore/JSRetainPtr.h>
@@ -39,7 +40,6 @@
 
 namespace WTR {
 
-class AccessibilityUIElement;
 #if USE(ATSPI)
 class AccessibilityNotificationHandler;
 #endif
