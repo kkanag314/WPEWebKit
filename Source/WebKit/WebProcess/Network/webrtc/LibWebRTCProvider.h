@@ -78,13 +78,6 @@ private:
 #endif
 };
 
-inline LibWebRTCProvider::LibWebRTCProvider(WebPage& webPage)
-    : m_webPage(webPage)
-{
-    m_useNetworkThreadWithSocketServer = false;
-    m_supportsMDNS = true;
-}
-
 inline UniqueRef<LibWebRTCProvider> createLibWebRTCProvider(WebPage& page)
 {
     return makeUniqueRef<LibWebRTCProvider>(page);
