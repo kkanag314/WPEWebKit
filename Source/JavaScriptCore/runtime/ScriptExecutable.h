@@ -27,6 +27,7 @@
 
 #include "ExecutableBase.h"
 #include "ParserModes.h"
+#include "ProfilerJettisonReason.h"
 
 namespace JSC {
 
@@ -88,7 +89,7 @@ public:
 
     void recordParse(CodeFeatures, LexicalScopeFeatures, bool hasCapturedVariables, int lastLine, unsigned endColumn);
     void installCode(CodeBlock*);
-    void installCode(VM&, CodeBlock*, CodeType, CodeSpecializationKind);
+    void installCode(VM&, CodeBlock*, CodeType, CodeSpecializationKind, Profiler::JettisonReason);
     CodeBlock* newCodeBlockFor(CodeSpecializationKind, JSFunction*, JSScope*);
     CodeBlock* newReplacementCodeBlockFor(CodeSpecializationKind);
 
