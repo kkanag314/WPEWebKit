@@ -234,11 +234,20 @@ ALWAYS_INLINE EncodedJSValue constructGenericTypedArrayViewImpl(JSGlobalObject* 
 
     JSValue firstValue = callFrame->uncheckedArgument(0);
     size_t offset = 0;
-    std::optional<size_t> length = std::nullopt;
-    if (jsDynamicCast<JSArrayBuffer*>(firstValue) && argCount > 1) {
-        offset = callFrame->uncheckedArgument(1).toTypedArrayIndex(globalObject, "byteOffset");
-        RETURN_IF_EXCEPTION(scope, encodedJSValue());
+    std::optional<size_t> length;
+    if (auto* arrayBuffer = jsDynamicCast<JSArrayBuffer*>(firstValue)) {
+        if (argCount > 1) {
+            offset = callFrame->uncheckedArgument(1).toTypedArrayIndex(globalObject, "byteOffset"_s);
+            RETURN_IF_EXCEPTION(scope, { });
 
+            if constexpr (ViewClass::TypedArrayStorageType == TypeDataView) {
+                RefPtr<ArrayBuffer> buffer = arrayBuffer->impl();
+                if (UNLIKELY(offset > buffer->byteLength())) {
+                    throwRangeError(globalObject, scope, "byteOffset exceeds source ArrayBuffer byteLength"_s);
+                    RETURN_IF_EXCEPTION(scope, { });
+                }
+            }
+        }
         if (argCount > 2) {
             // If the length value is present but undefined, treat it as missing.
             JSValue lengthValue = callFrame->uncheckedArgument(2);
