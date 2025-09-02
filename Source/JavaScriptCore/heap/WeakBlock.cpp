@@ -45,6 +45,7 @@ WeakBlock* WeakBlock::create(Heap& heap, CellContainer container)
 
 void WeakBlock::destroy(Heap& heap, WeakBlock* block)
 {
+    RELEASE_ASSERT(!block->next() && !block->prev());
     block->~WeakBlock();
     WeakBlockMalloc::free(block);
     heap.didFreeBlock(WeakBlock::blockSize);
