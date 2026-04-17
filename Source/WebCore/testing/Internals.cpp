@@ -2483,8 +2483,11 @@ String Internals::parserMetaData(JSC::JSValue code)
         GetCallerCodeBlockFunctor iter;
         callFrame->iterate(vm, iter);
         executable = iter.codeBlock()->ownerExecutable();
-    } else if (code.isCallable())
-        executable = JSC::jsCast<JSFunction*>(code.toObject(globalObject))->jsExecutable();
+    } else if (code.isCallable()) {
+        JSFunction* codeFunction = JSC::jsCast<JSFunction*>(code.toObject(globalObject));
+        JSC::EnsureStillAliveScope ensureCodeFunction(codeFunction);
+        executable = codeFunction->jsExecutable();
+    }
     else
         return String();
 
@@ -5200,7 +5203,9 @@ RefPtr<GCObservation> Internals::observeGC(JSC::JSValue value)
 {
     if (!value.isObject())
         return nullptr;
-    return GCObservation::create(asObject(value));
+    JSC::JSObject* object = asObject(value);
+    JSC::EnsureStillAliveScope ensureObject(object);
+    return GCObservation::create(object);
 }
 
 void Internals::setUserInterfaceLayoutDirection(UserInterfaceLayoutDirection userInterfaceLayoutDirection)

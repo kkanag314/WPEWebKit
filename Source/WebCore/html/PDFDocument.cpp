@@ -191,6 +191,7 @@ void PDFDocument::sendPDFArrayBuffer()
 
     auto globalObject = this->globalObject();
     auto& vm = globalObject->vm();
+    JSC::EnsureStillAliveScope ensureGlobalObject(globalObject);
 
     JSLockHolder lock(vm);
     auto callData = JSC::getCallData(openFunction);

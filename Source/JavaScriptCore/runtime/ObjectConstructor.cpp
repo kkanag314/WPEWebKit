@@ -474,6 +474,7 @@ bool toPropertyDescriptor(JSGlobalObject* globalObject, JSValue in, PropertyDesc
         return false;
     }
     JSObject* description = asObject(in);
+    JSC::EnsureStillAliveScope ensureDescription(description);
 
     bool hasProperty = description->hasProperty(globalObject, vm.propertyNames->enumerable);
     EXCEPTION_ASSERT(!scope.exception() || !hasProperty);

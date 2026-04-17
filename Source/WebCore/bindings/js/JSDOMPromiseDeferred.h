@@ -67,6 +67,7 @@ public:
         ASSERT(globalObject());
         JSC::JSGlobalObject* lexicalGlobalObject = globalObject();
         JSC::JSLockHolder locker(lexicalGlobalObject);
+        JSC::EnsureStillAliveScope ensureLexicalGlobalObject(lexicalGlobalObject);
         resolve(*lexicalGlobalObject, toJS<IDLType>(*lexicalGlobalObject, *globalObject(), std::forward<typename IDLType::ParameterType>(value)));
     }
 
@@ -104,6 +105,7 @@ public:
         ASSERT(globalObject());
         JSC::JSGlobalObject* lexicalGlobalObject = globalObject();
         JSC::JSLockHolder locker(lexicalGlobalObject);
+        JSC::EnsureStillAliveScope ensureLexicalGlobalObject(lexicalGlobalObject);
         resolve(*lexicalGlobalObject, toJSNewlyCreated<IDLType>(*lexicalGlobalObject, *globalObject(), std::forward<typename IDLType::ParameterType>(value)));
     }
 
@@ -117,6 +119,7 @@ public:
         ASSERT(globalObject());
         auto* lexicalGlobalObject = globalObject();
         JSC::JSLockHolder locker(lexicalGlobalObject);
+        JSC::EnsureStillAliveScope ensureLexicalGlobalObject(lexicalGlobalObject);
         resolve(*lexicalGlobalObject, toJSNewlyCreated<IDLType>(*lexicalGlobalObject, *globalObject(), createValue(*globalObject()->scriptExecutionContext())));
     }
 
@@ -130,6 +133,7 @@ public:
         ASSERT(globalObject());
         JSC::JSGlobalObject* lexicalGlobalObject = globalObject();
         JSC::JSLockHolder locker(lexicalGlobalObject);
+        JSC::EnsureStillAliveScope ensureLexicalGlobalObject(lexicalGlobalObject);
         reject(*lexicalGlobalObject, toJS<IDLType>(*lexicalGlobalObject, *globalObject(), std::forward<typename IDLType::ParameterType>(value)), rejectAsHandled);
     }
 
@@ -150,6 +154,7 @@ public:
         auto* lexicalGlobalObject = globalObject();
         JSC::VM& vm = lexicalGlobalObject->vm();
         JSC::JSLockHolder locker(vm);
+        JSC::EnsureStillAliveScope ensureLexicalGlobalObject(lexicalGlobalObject);
         auto scope = DECLARE_CATCH_SCOPE(vm);
         resolve(*lexicalGlobalObject, callback(*globalObject()));
         if (UNLIKELY(scope.exception()))
@@ -167,6 +172,7 @@ public:
         auto* lexicalGlobalObject = globalObject();
         JSC::VM& vm = lexicalGlobalObject->vm();
         JSC::JSLockHolder locker(vm);
+        JSC::EnsureStillAliveScope ensureLexicalGlobalObject(lexicalGlobalObject);
         auto scope = DECLARE_CATCH_SCOPE(vm);
         reject(*lexicalGlobalObject, callback(*globalObject()), rejectAsHandled);
         if (UNLIKELY(scope.exception()))

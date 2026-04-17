@@ -305,6 +305,7 @@ bool WorkerOrWorkletScriptController::loadModuleSynchronously(WorkerScriptFetche
             auto scope = DECLARE_CATCH_SCOPE(vm);
             if (errorValue.isObject()) {
                 auto* object = JSC::asObject(errorValue);
+                JSC::EnsureStillAliveScope ensureObject(object);
                 if (JSValue failureKindValue = object->getDirect(vm, builtinNames(vm).failureKindPrivateName())) {
                     // This is host propagated error in the module loader pipeline.
                     switch (static_cast<ModuleFetchFailureKind>(failureKindValue.asInt32())) {
@@ -480,6 +481,7 @@ void WorkerOrWorkletScriptController::loadAndEvaluateModule(const URL& moduleURL
             JSValue errorValue = callFrame->argument(0);
             if (errorValue.isObject()) {
                 auto* object = JSC::asObject(errorValue);
+                JSC::EnsureStillAliveScope ensureObject(object);
                 if (JSValue failureKindValue = object->getDirect(vm, builtinNames(vm).failureKindPrivateName())) {
                     auto catchScope = DECLARE_CATCH_SCOPE(vm);
                     String message = retrieveErrorMessageWithoutName(*globalObject, vm, object, catchScope);
@@ -496,6 +498,7 @@ void WorkerOrWorkletScriptController::loadAndEvaluateModule(const URL& moduleURL
                 }
                 if (object->inherits<ErrorInstance>()) {
                     auto* error = jsCast<ErrorInstance*>(object);
+                    JSC::EnsureStillAliveScope ensureError(error);
                     switch (error->errorType()) {
                     case ErrorType::TypeError: {
                         auto catchScope = DECLARE_CATCH_SCOPE(vm);

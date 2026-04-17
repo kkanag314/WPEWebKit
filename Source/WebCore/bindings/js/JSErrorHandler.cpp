@@ -80,6 +80,12 @@ void JSErrorHandler::handleEvent(ScriptExecutionContext& scriptExecutionContext,
     if (!globalObject)
         return;
 
+    // Prevent the compiler from keeping jsFunction or globalObject only in caller-saved
+    // registers across GC allocation points below. On ARM 32-bit, conservative stack
+    // scanning only sees callee-saved registers and stack-spilled values.
+    JSC::EnsureStillAliveScope ensureJSFunction(jsFunction);
+    JSC::EnsureStillAliveScope ensureGlobalObject(globalObject);
+
     auto callData = JSC::getCallData(jsFunction);
     if (callData.type != CallData::Type::None) {
         Ref<JSErrorHandler> protectedThis(*this);

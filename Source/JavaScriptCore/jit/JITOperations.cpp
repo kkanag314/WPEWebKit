@@ -734,11 +734,12 @@ JSC_DEFINE_JIT_OPERATION(operationPutByIdStrict, void, (JSGlobalObject* globalOb
     stubInfo->tookSlowPath = true;
     
     JSValue baseValue = JSValue::decode(encodedBase);
+    JSC::EnsureStillAliveScope ensureBase(baseValue);
     CacheableIdentifier identifier = CacheableIdentifier::createFromRawBits(rawCacheableIdentifier);
     Identifier ident = Identifier::fromUid(vm, identifier.uid());
     PutPropertySlot slot(baseValue, true, callFrame->codeBlock()->putByIdContext());
     baseValue.putInline(globalObject, ident, JSValue::decode(encodedValue), slot);
-    
+
     LOG_IC((ICEvent::OperationPutByIdStrict, baseValue.classInfoOrNull(), ident, slot.base() == baseValue));
 }
 
@@ -753,6 +754,7 @@ JSC_DEFINE_JIT_OPERATION(operationPutByIdNonStrict, void, (JSGlobalObject* globa
     stubInfo->tookSlowPath = true;
     
     JSValue baseValue = JSValue::decode(encodedBase);
+    JSC::EnsureStillAliveScope ensureBase(baseValue);
     CacheableIdentifier identifier = CacheableIdentifier::createFromRawBits(rawCacheableIdentifier);
     Identifier ident = Identifier::fromUid(vm, identifier.uid());
     PutPropertySlot slot(baseValue, false, callFrame->codeBlock()->putByIdContext());
@@ -772,10 +774,12 @@ JSC_DEFINE_JIT_OPERATION(operationPutByIdDirectStrict, void, (JSGlobalObject* gl
     stubInfo->tookSlowPath = true;
     
     JSValue baseValue = JSValue::decode(encodedBase);
+    JSObject* baseObject = asObject(baseValue);
+    JSC::EnsureStillAliveScope ensureBase(baseObject);
     CacheableIdentifier identifier = CacheableIdentifier::createFromRawBits(rawCacheableIdentifier);
     Identifier ident = Identifier::fromUid(vm, identifier.uid());
     PutPropertySlot slot(baseValue, true, callFrame->codeBlock()->putByIdContext());
-    CommonSlowPaths::putDirectWithReify(vm, globalObject, asObject(baseValue), ident, JSValue::decode(encodedValue), slot);
+    CommonSlowPaths::putDirectWithReify(vm, globalObject, baseObject, ident, JSValue::decode(encodedValue), slot);
 
     LOG_IC((ICEvent::OperationPutByIdDirectStrict, baseValue.classInfoOrNull(), ident, slot.base() == baseValue));
 }
@@ -791,10 +795,12 @@ JSC_DEFINE_JIT_OPERATION(operationPutByIdDirectNonStrict, void, (JSGlobalObject*
     stubInfo->tookSlowPath = true;
     
     JSValue baseValue = JSValue::decode(encodedBase);
+    JSObject* baseObject = asObject(baseValue);
+    JSC::EnsureStillAliveScope ensureBase(baseObject);
     CacheableIdentifier identifier = CacheableIdentifier::createFromRawBits(rawCacheableIdentifier);
     Identifier ident = Identifier::fromUid(vm, identifier.uid());
     PutPropertySlot slot(baseValue, false, callFrame->codeBlock()->putByIdContext());
-    CommonSlowPaths::putDirectWithReify(vm, globalObject, asObject(baseValue), ident, JSValue::decode(encodedValue), slot);
+    CommonSlowPaths::putDirectWithReify(vm, globalObject, baseObject, ident, JSValue::decode(encodedValue), slot);
 
     LOG_IC((ICEvent::OperationPutByIdDirectNonStrict, baseValue.classInfoOrNull(), ident, slot.base() == baseValue));
 }
@@ -814,6 +820,7 @@ JSC_DEFINE_JIT_OPERATION(operationPutByIdStrictOptimize, void, (JSGlobalObject* 
 
     JSValue value = JSValue::decode(encodedValue);
     JSValue baseValue = JSValue::decode(encodedBase);
+    JSC::EnsureStillAliveScope ensureBase(baseValue);
     CodeBlock* codeBlock = callFrame->codeBlock();
     PutPropertySlot slot(baseValue, true, codeBlock->putByIdContext());
 
@@ -846,6 +853,7 @@ JSC_DEFINE_JIT_OPERATION(operationPutByIdNonStrictOptimize, void, (JSGlobalObjec
 
     JSValue value = JSValue::decode(encodedValue);
     JSValue baseValue = JSValue::decode(encodedBase);
+    JSC::EnsureStillAliveScope ensureBase(baseValue);
     CodeBlock* codeBlock = callFrame->codeBlock();
     PutPropertySlot slot(baseValue, false, codeBlock->putByIdContext());
 
@@ -878,6 +886,7 @@ JSC_DEFINE_JIT_OPERATION(operationPutByIdDirectStrictOptimize, void, (JSGlobalOb
 
     JSValue value = JSValue::decode(encodedValue);
     JSObject* baseObject = asObject(JSValue::decode(encodedBase));
+    JSC::EnsureStillAliveScope ensureBase(baseObject);
     CodeBlock* codeBlock = callFrame->codeBlock();
     PutPropertySlot slot(baseObject, true, codeBlock->putByIdContext());
     Structure* structure = nullptr;
@@ -909,6 +918,7 @@ JSC_DEFINE_JIT_OPERATION(operationPutByIdDirectNonStrictOptimize, void, (JSGloba
 
     JSValue value = JSValue::decode(encodedValue);
     JSObject* baseObject = asObject(JSValue::decode(encodedBase));
+    JSC::EnsureStillAliveScope ensureBase(baseObject);
     CodeBlock* codeBlock = callFrame->codeBlock();
     PutPropertySlot slot(baseObject, false, codeBlock->putByIdContext());
     Structure* structure = nullptr;
@@ -1073,6 +1083,7 @@ static void putByVal(JSGlobalObject* globalObject, JSValue baseValue, JSValue su
 
     scope.release();
     PutPropertySlot slot(baseValue, ecmaMode.isStrict());
+    JSC::EnsureStillAliveScope ensureBase(baseValue);
     baseValue.putInline(globalObject, property, value, slot);
 }
 
@@ -1201,6 +1212,7 @@ static ALWAYS_INLINE void directPutByValOptimize(JSGlobalObject* globalObject, C
 
     RELEASE_ASSERT(baseValue.isObject());
     JSObject* baseObject = asObject(baseValue);
+    JSC::EnsureStillAliveScope ensureBase(baseObject);
 
     if (!isCopyOnWrite(baseObject->indexingMode()) && subscript.isInt32()) {
         Structure* structure = baseObject->structure();
@@ -1302,13 +1314,15 @@ JSC_DEFINE_JIT_OPERATION(operationDirectPutByValStrictGeneric, void, (JSGlobalOb
     JITOperationPrologueCallFrameTracer tracer(vm, callFrame);
 
     JSValue baseValue = JSValue::decode(encodedBaseValue);
+    JSObject* baseObject = asObject(baseValue);
+    JSC::EnsureStillAliveScope ensureBase(baseObject);
     JSValue subscript = JSValue::decode(encodedSubscript);
     JSValue value = JSValue::decode(encodedValue);
     RELEASE_ASSERT(baseValue.isObject());
 
     stubInfo->tookSlowPath = true;
 
-    directPutByVal(globalObject, asObject(baseValue), subscript, value, profile, ECMAMode::strict());
+    directPutByVal(globalObject, baseObject, subscript, value, profile, ECMAMode::strict());
 }
 
 JSC_DEFINE_JIT_OPERATION(operationDirectPutByValNonStrictGeneric, void, (JSGlobalObject* globalObject, EncodedJSValue encodedBaseValue, EncodedJSValue encodedSubscript, EncodedJSValue encodedValue, StructureStubInfo* stubInfo, ArrayProfile* profile))
@@ -1318,13 +1332,15 @@ JSC_DEFINE_JIT_OPERATION(operationDirectPutByValNonStrictGeneric, void, (JSGloba
     JITOperationPrologueCallFrameTracer tracer(vm, callFrame);
 
     JSValue baseValue = JSValue::decode(encodedBaseValue);
+    JSObject* baseObject = asObject(baseValue);
+    JSC::EnsureStillAliveScope ensureBase(baseObject);
     JSValue subscript = JSValue::decode(encodedSubscript);
     JSValue value = JSValue::decode(encodedValue);
     RELEASE_ASSERT(baseValue.isObject());
 
     stubInfo->tookSlowPath = true;
 
-    directPutByVal(globalObject, asObject(baseValue), subscript, value, profile, ECMAMode::sloppy());
+    directPutByVal(globalObject, baseObject, subscript, value, profile, ECMAMode::sloppy());
 }
 
 JSC_DEFINE_JIT_OPERATION(operationSetPrivateBrandOptimize, void, (JSGlobalObject* globalObject, StructureStubInfo* stubInfo, EncodedJSValue encodedBaseValue, EncodedJSValue encodedBrand))

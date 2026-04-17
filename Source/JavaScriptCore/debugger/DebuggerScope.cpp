@@ -74,6 +74,7 @@ bool DebuggerScope::getOwnPropertySlot(JSObject* object, JSGlobalObject* globalO
     if (!scope->isValid())
         return false;
     JSObject* thisObject = JSScope::objectAtScope(scope->jsScope());
+    JSC::EnsureStillAliveScope ensureThisObject(thisObject);
     slot.setThisValue(JSValue(thisObject));
 
     // By default, JSObject::getPropertySlot() will look in the DebuggerScope's prototype
@@ -105,6 +106,7 @@ bool DebuggerScope::put(JSCell* cell, JSGlobalObject* globalObject, PropertyName
     if (!scope->isValid())
         return false;
     JSObject* thisObject = JSScope::objectAtScope(scope->jsScope());
+    JSC::EnsureStillAliveScope ensureThisObject(thisObject);
     slot.setThisValue(JSValue(thisObject));
     return thisObject->methodTable()->put(thisObject, globalObject, propertyName, value, slot);
 }
@@ -116,6 +118,7 @@ bool DebuggerScope::deleteProperty(JSCell* cell, JSGlobalObject* globalObject, P
     if (!scope->isValid())
         return false;
     JSObject* thisObject = JSScope::objectAtScope(scope->jsScope());
+    JSC::EnsureStillAliveScope ensureThisObject(thisObject);
     return thisObject->methodTable()->deleteProperty(thisObject, globalObject, propertyName, slot);
 }
 
@@ -126,6 +129,7 @@ void DebuggerScope::getOwnPropertyNames(JSObject* object, JSGlobalObject* global
     if (!scope->isValid())
         return;
     JSObject* thisObject = JSScope::objectAtScope(scope->jsScope());
+    JSC::EnsureStillAliveScope ensureThisObject(thisObject);
     thisObject->getPropertyNames(globalObject, propertyNames, mode);
 }
 
@@ -136,6 +140,7 @@ bool DebuggerScope::defineOwnProperty(JSObject* object, JSGlobalObject* globalOb
     if (!scope->isValid())
         return false;
     JSObject* thisObject = JSScope::objectAtScope(scope->jsScope());
+    JSC::EnsureStillAliveScope ensureThisObject(thisObject);
     return thisObject->methodTable()->defineOwnProperty(thisObject, globalObject, propertyName, descriptor, shouldThrow);
 }
 
@@ -233,6 +238,7 @@ JSValue DebuggerScope::caughtValue(JSGlobalObject* globalObject) const
 {
     ASSERT(isCatchScope());
     JSLexicalEnvironment* catchEnvironment = jsCast<JSLexicalEnvironment*>(m_scope.get());
+    JSC::EnsureStillAliveScope ensureCatchEnvironment(catchEnvironment);
     SymbolTable* catchSymbolTable = catchEnvironment->symbolTable();
     RELEASE_ASSERT(catchSymbolTable->size() == 1);
     PropertyName errorName(catchSymbolTable->begin(catchSymbolTable->m_lock)->key.get());

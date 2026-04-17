@@ -554,6 +554,7 @@ JSC_DEFINE_CUSTOM_GETTER(customGetterValueGetter, (JSGlobalObject* globalObject,
     CustomGetter* thisObject = jsDynamicCast<CustomGetter*>(JSValue::decode(thisValue));
     if (!thisObject)
         return throwVMTypeError(globalObject, scope);
+    JSC::EnsureStillAliveScope ensureThisObject(thisObject);
     bool shouldThrow = thisObject->get(globalObject, PropertyName(Identifier::fromString(vm, "shouldThrow"_s))).toBoolean(globalObject);
     RETURN_IF_EXCEPTION(scope, encodedJSValue());
     if (shouldThrow)
@@ -570,6 +571,7 @@ JSC_DEFINE_CUSTOM_GETTER(customGetterAcessorGetter, (JSGlobalObject* globalObjec
     JSObject* thisObject = jsDynamicCast<JSObject*>(JSValue::decode(thisValue));
     if (!thisObject)
         return throwVMTypeError(globalObject, scope);
+    JSC::EnsureStillAliveScope ensureThisObject(thisObject);
     bool shouldThrow = thisObject->get(globalObject, PropertyName(Identifier::fromString(vm, "shouldThrow"_s))).toBoolean(globalObject);
     RETURN_IF_EXCEPTION(scope, encodedJSValue());
     if (shouldThrow)

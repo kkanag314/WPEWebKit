@@ -111,6 +111,7 @@ JSArrayBuffer* JSWebAssemblyMemory::buffer(JSGlobalObject* globalObject)
     if (m_memory->sharingMode() == Wasm::MemorySharingMode::Shared)
         m_buffer->makeShared();
     auto* arrayBuffer = JSArrayBuffer::create(vm, globalObject->arrayBufferStructure(m_buffer->sharingMode()), m_buffer.get());
+    JSC::EnsureStillAliveScope ensureArrayBuffer(arrayBuffer);
     if (m_memory->sharingMode() == Wasm::MemorySharingMode::Shared) {
         objectConstructorFreeze(globalObject, arrayBuffer);
         RETURN_IF_EXCEPTION(throwScope, { });

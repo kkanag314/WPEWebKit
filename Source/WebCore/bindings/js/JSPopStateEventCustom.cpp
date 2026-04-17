@@ -85,6 +85,7 @@ JSValue JSPopStateEvent::state(JSGlobalObject& lexicalGlobalObject) const
 
     if (isSameState) {
         JSHistory* jsHistory = jsCast<JSHistory*>(toJS(&lexicalGlobalObject, globalObject(), *history).asCell());
+        JSC::EnsureStillAliveScope ensureJsHistory(jsHistory);
         result = jsHistory->state(lexicalGlobalObject);
     } else
         result = event.serializedState()->deserialize(lexicalGlobalObject, globalObject());

@@ -2042,6 +2042,7 @@ SerializationReturnCode CloneSerializer::serialize(JSValue in)
                 if (inputObjectStack.size() > maximumFilterRecursion)
                     return SerializationReturnCode::StackOverflowError;
                 JSMap* inMap = jsCast<JSMap*>(inValue);
+                JSC::EnsureStillAliveScope ensureInMap(inMap);
                 if (!startMap(inMap))
                     break;
                 JSMapIterator* iterator = JSMapIterator::create(vm, m_lexicalGlobalObject->mapIteratorStructure(), inMap, IterationKind::Entries);
@@ -2088,6 +2089,7 @@ SerializationReturnCode CloneSerializer::serialize(JSValue in)
                 if (inputObjectStack.size() > maximumFilterRecursion)
                     return SerializationReturnCode::StackOverflowError;
                 JSSet* inSet = jsCast<JSSet*>(inValue);
+                JSC::EnsureStillAliveScope ensureInSet(inSet);
                 if (!startSet(inSet))
                     break;
                 JSSetIterator* iterator = JSSetIterator::create(vm, m_lexicalGlobalObject->setIteratorStructure(), inSet, IterationKind::Keys);
@@ -3985,6 +3987,7 @@ DeserializationResult CloneDeserializer::deserialize()
             if (outputObjectStack.size() > maximumFilterRecursion)
                 return std::make_pair(JSValue(), SerializationReturnCode::StackOverflowError);
             JSObject* outObject = constructEmptyObject(m_lexicalGlobalObject, m_globalObject->objectPrototype());
+            JSC::EnsureStillAliveScope ensureOutObject(outObject);
             m_gcBuffer.appendWithCrashOnOverflow(outObject);
             outputObjectStack.append(outObject);
         }
@@ -4020,6 +4023,7 @@ DeserializationResult CloneDeserializer::deserialize()
             if (outputObjectStack.size() > maximumFilterRecursion)
                 return std::make_pair(JSValue(), SerializationReturnCode::StackOverflowError);
             JSMap* map = JSMap::create(m_lexicalGlobalObject->vm(), m_globalObject->mapStructure());
+            JSC::EnsureStillAliveScope ensureMap(map);
             m_gcBuffer.appendWithCrashOnOverflow(map);
             outputObjectStack.append(map);
             mapStack.append(map);
@@ -4049,6 +4053,7 @@ DeserializationResult CloneDeserializer::deserialize()
             if (outputObjectStack.size() > maximumFilterRecursion)
                 return std::make_pair(JSValue(), SerializationReturnCode::StackOverflowError);
             JSSet* set = JSSet::create(m_lexicalGlobalObject->vm(), m_globalObject->setStructure());
+            JSC::EnsureStillAliveScope ensureSet(set);
             m_gcBuffer.appendWithCrashOnOverflow(set);
             outputObjectStack.append(set);
             setStack.append(set);
