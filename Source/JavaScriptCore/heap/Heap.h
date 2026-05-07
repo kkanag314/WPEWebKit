@@ -575,6 +575,7 @@ private:
     friend class HeapVerifier;
     friend class IsoSubspacePerVM;
     friend class JITStubRoutine;
+    friend class JSArray;
     friend class LLIntOffsetsExtractor;
     friend class MarkStackMergingConstraint;
     friend class MarkedSpace;
