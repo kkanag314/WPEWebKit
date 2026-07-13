@@ -27,6 +27,7 @@
 #include "config.h"
 #include "WaiterListManager.h"
 
+#include "JSCInlines.h"
 #include "JSGlobalObject.h"
 #include "JSLock.h"
 #include "ObjectConstructor.h"

@@ -27,6 +27,7 @@
 #include "Keyboard.h"
 
 #include "JSDOMPromiseDeferred.h"
+#include "NavigatorBase.h"
 #include "NotImplemented.h"
 #include <wtf/IsoMallocInlines.h>
 
