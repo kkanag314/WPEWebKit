@@ -216,8 +216,9 @@ bool MediaPlayerPrivateGStreamerMSE::doSeek(const MediaTime& position, float rat
     }
     invalidateCachedPosition();
 
-    // Notify MediaSource and have new frames enqueued (when they're available).
+    propagateReadyStateToPlayer();
 
+    // Notify MediaSource and have new frames enqueued (when they're available).
     m_mediaSource->seekToTime(m_seekTime);
 
     if (m_player && !hasVideo() && m_audioSink) {
@@ -281,7 +282,7 @@ void MediaPlayerPrivateGStreamerMSE::setReadyState(MediaPlayer::ReadyState media
 
 void MediaPlayerPrivateGStreamerMSE::propagateReadyStateToPlayer()
 {
-    ASSERT(m_mediaSourceReadyState < MediaPlayer::ReadyState::HaveCurrentData || !m_isWaitingForPreroll);
+    ASSERT(m_mediaSourceReadyState < MediaPlayer::ReadyState::HaveCurrentData || !hasVideo() || !m_isWaitingForPreroll || m_isSeeking);
     if (m_readyState == m_mediaSourceReadyState)
         return;
     GST_DEBUG("Propagating MediaSource readyState %s to player ready state (currently %s)", dumpReadyState(m_mediaSourceReadyState), dumpReadyState(m_readyState));

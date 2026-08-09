@@ -1493,6 +1493,14 @@ MediaTime MediaPlayerPrivateGStreamer::playbackPosition() const
     else if (m_canFallBackToLastFinishedSeekPosition)
         playbackPosition = m_seekTime;
 
+    // Avoid exceeding the reported duration even by minuscule amounts.
+    // The multiplatform layer could degrade us to HaveMetadata if we let that happen (e.g. in MSE monitorSourceBuffers()).
+    // Don't apply this condition in the special zero duration case, since zero is a special value used when the duration
+    // is unknown, and applying the condition in that case may have undesired effects.
+    // See: MediaPlayerPrivateGStreamer::duration(), MediaPlayerPrivateGStreamerMSE::duration().
+    if (durationMediaTime() != MediaTime::zeroTime() && playbackPosition > durationMediaTime())
+        playbackPosition = durationMediaTime();
+
     setCachedPosition(playbackPosition);
     invalidateCachedPositionOnNextIteration();
     return playbackPosition;
